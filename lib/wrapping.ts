@@ -2,7 +2,14 @@ import { getCrypto } from '@/crypto';
 import { importKey, mergeUint8Array, splitByLengths } from '@/util';
 import { decode, encode as encodeBase64 } from '@/base64';
 
-const wrapKey = async function ({ keys, kek, encode }: { keys: Uint8Array[]; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
+/**
+ * wraps/encrypts keys
+ * @param keys - keys to wrap/encrypt (length (in bytes) for each key must be multiple of 8)
+ * @param kek - key used to encrypt the keys
+ * @param encode - boolean, if wrapped keys should be base64-encoded
+ * @returns Promise with wrappedKeys, as base64-encoded string if `encode` is true, as Uint8Array if not
+ */
+const wrapKeys = async function ({ keys, kek, encode }: { keys: Uint8Array[]; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
   const crypto = await getCrypto();
   const key = mergeUint8Array(keys);
   const keyMaterial = await importKey(key, 'AES-KW', ['wrapKey']);
@@ -15,14 +22,21 @@ const wrapKey = async function ({ keys, kek, encode }: { keys: Uint8Array[]; kek
   return new Uint8Array(wrapped);
 };
 
-const unwrapKey = async function ({
+/**
+ * unwraps/decrypts keys
+ * @param wrappedKeys - keys to unwrap/decrypt
+ * @param kek - key used to encrypt the keys
+ * @param lengths - An array of `number`s, providing the lengths of the unwrapped keys
+ * @returns Promise with an array of unwrapped keys
+ */
+const unwrapKeys = async function ({
   wrappedKeys,
   kek,
-  length
+  lengths
 }: {
   wrappedKeys: Uint8Array | string;
   kek: Uint8Array;
-  length?: number[];
+  lengths?: number[];
 }): Promise<Uint8Array[]> {
   const crypto = await getCrypto();
   const kekMaterial = await importKey(kek, 'AES-KW', ['unwrapKey']);
@@ -36,7 +50,7 @@ const unwrapKey = async function ({
   const rawKey = await crypto.subtle.exportKey('raw', unwrappedKey);
   const key = new Uint8Array(rawKey);
 
-  return splitByLengths(key, length ?? []);
+  return splitByLengths(key, lengths ?? []);
 };
 
-export { wrapKey, unwrapKey };
+export { wrapKeys, unwrapKeys };

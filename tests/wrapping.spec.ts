@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { wrapKey, unwrapKey } from '@/wrapping';
+import { wrapKeys, unwrapKeys } from '@/wrapping';
 
 // Helper für zufällige Bytes
 function randomBytes(length: number): Uint8Array {
@@ -21,21 +21,21 @@ describe('wrapping', () => {
   });
 
   test('wrapKey gibt Uint8Array zurück', async () => {
-    const wrapped = await wrapKey({ keys, kek });
+    const wrapped = await wrapKeys({ keys, kek });
     expect(wrapped).toBeInstanceOf(Uint8Array);
     expect(wrapped.length).toBeGreaterThan(0);
   });
 
   test('wrapKey mit Base64-Encoding', async () => {
-    const wrappedBase64 = await wrapKey({ keys, kek, encode: true });
+    const wrappedBase64 = await wrapKeys({ keys, kek, encode: true });
     expect(typeof wrappedBase64).toBe('string');
     // Optional: Prüfen, ob Base64-String gültig ist
     expect(wrappedBase64).toMatch(/^[A-Za-z0-9+/]+={0,2}$/);
   });
 
   test('unwrapKey liefert die originalen Keys zurück', async () => {
-    const wrapped = await wrapKey({ keys, kek });
-    const unwrapped = await unwrapKey({ wrappedKeys: wrapped, kek, length: keys.map((k) => k.length) });
+    const wrapped = await wrapKeys({ keys, kek });
+    const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: keys.map((k) => k.length) });
 
     expect(unwrapped.length).toBe(keys.length);
     unwrapped.forEach((u, i) => {
@@ -44,8 +44,8 @@ describe('wrapping', () => {
   });
 
   test('unwrapKey ohne length splitten gibt ein Array mit gesamtem Key zurück', async () => {
-    const wrapped = await wrapKey({ keys, kek });
-    const unwrapped = await unwrapKey({ wrappedKeys: wrapped, kek });
+    const wrapped = await wrapKeys({ keys, kek });
+    const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek });
 
     // Da keine length übergeben, sollte ein einzelnes Array zurückkommen
     expect(unwrapped.length).toBe(1);
@@ -59,9 +59,9 @@ describe('wrapping', () => {
   });
 
   test('unwrapKey mit unvollständigen length-Array behandelt Rest korrekt', async () => {
-    const wrapped = await wrapKey({ keys, kek });
+    const wrapped = await wrapKeys({ keys, kek });
     const partialLength = [16]; // nur erste 16 Bytes splitten
-    const unwrapped = await unwrapKey({ wrappedKeys: wrapped, kek, length: partialLength });
+    const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: partialLength });
 
     expect(unwrapped.length).toBe(2); // erste 16, rest
     expect(unwrapped[0]).toEqual(keys[0]);
@@ -69,8 +69,8 @@ describe('wrapping', () => {
   });
 
   test('wrap + unwrap ist symmetrisch', async () => {
-    const wrapped = await wrapKey({ keys, kek });
-    const unwrapped = await unwrapKey({ wrappedKeys: wrapped, kek, length: keys.map((k) => k.length) });
+    const wrapped = await wrapKeys({ keys, kek });
+    const unwrapped = await unwrapKeys({ wrappedKeys: wrapped, kek, lengths: keys.map((k) => k.length) });
 
     const mergedUnwrapped = unwrapped.reduce((acc, k) => {
       const tmp = new Uint8Array(acc.length + k.length);

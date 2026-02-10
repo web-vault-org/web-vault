@@ -25,6 +25,14 @@ const encodeAAD = function (additionalData?: string[]): Uint8Array | undefined {
   return encoder.encode(additionalData.join('\u0000'));
 };
 
+/**
+ * encrypts a string or a Uint8Array
+ * @param content - plaintext as string or Uint8Array
+ * @param key - key as Uint8Array
+ * @param encode - boolean, if plaintext should be base64-encoded
+ * @param additionalData - array of strings, with additional Data for integrity and authenticity checks
+ * @returns Promise with ciphertext, as base64-encoded string if `encode` is true, as Uint8Array if not
+ */
 const encrypt = async function ({
   content,
   key,
@@ -51,6 +59,14 @@ const encrypt = async function ({
   return encode ? encodeBase64(result) : result;
 };
 
+/**
+ * decrypts a string or a Uint8Array
+ * @param content - ciphertext as string or Uint8Array
+ * @param key - key as Uint8Array
+ * @param asString - boolean, if plaintext should be returned as string
+ * @param additionalData - array of strings, with additional Data for integrity and authenticity checks
+ * @returns Promise with plaintext, as string if `asString` is true, as Uint8Array if not
+ */
 const decrypt = async function ({
   content,
   key,

@@ -18,11 +18,26 @@ const hmac = async function (dataString: string, key: Uint8Array): Promise<strin
   return btoa(String.fromCharCode(...hmacBytes));
 };
 
+/**
+ * signs an object
+ * @param data - object to sign
+ * @param key - signing key
+ * @param exclude - array with names of properties to exclude
+ * @returns Promise with signature as base64-encoded string
+ */
 const sign = async function ({ data, key, exclude }: { data: Record<string, unknown>; key: Uint8Array; exclude?: string[] }): Promise<string> {
   const dataString = createDataString(data, exclude);
   return hmac(dataString, key);
 };
 
+/**
+ * verifies an object
+ * @param data - object to verify
+ * @param key - signing key
+ * @param signature - signature as string to verify the object against
+ * @param exclude - array with names of properties to exclude
+ * @returns Promise with boolean, stating if object is authentic and integer
+ */
 const verify = async function ({
   data,
   key,
