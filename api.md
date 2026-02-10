@@ -152,7 +152,7 @@ A key wrapped as one key can be unwrapped as two or more keys later. So wrapping
 
 ## Encryption
 To encrypt a string or a Uint8Array, use the function `encrypt`,
-providing the plaintext, the key and optionally an encode-toggle
+providing the plaintext, the key, optionally an encode-toggle and optionally additionalData
 
 ### Syntax
 
@@ -180,7 +180,7 @@ A `string` or `Uint8Array`, providing the plaintext
 #### key
 A `Uint8Array`, providing the key
 
-#### encode
+#### encode (optional)
 A `boolean`, stating if plaintext should be base64-encoded. \
 Default: `false`
 
@@ -199,7 +199,7 @@ The used algorithm also provides authenticity and integrity checks, so you don't
 
 ## Decryption
 To decrypt a string or a Uint8Array, use the function `decrypt`,
-providing the ciphertext, the key and optionally an asString-toggle
+providing the ciphertext, optionally an asString-toggle and optionally additionalData
 
 ### Syntax
 
@@ -227,7 +227,7 @@ A `string` or `Uint8Array`, providing the ciphertext
 #### key
 A `Uint8Array`, providing the key
 
-#### asString
+#### asString (optional)
 A `boolean`, stating if result should be returned as string. \
 Default: `false`
 

@@ -46,18 +46,40 @@ interface WebVault {
    * @param content - plaintext as string or Uint8Array
    * @param key - key as Uint8Array
    * @param encode - boolean, if plaintext should be base64-encoded
+   * @param additionalData - array of strings, with additional Data for integrity and authenticity checks
    * @returns Promise with ciphertext, as base64-encoded string if `encode` is true, as Uint8Array if not
    */
-  encrypt: ({ content, key, encode }: { content: string | Uint8Array; key: Uint8Array; encode?: boolean }) => Promise<Uint8Array | string>;
+  encrypt: ({
+    content,
+    key,
+    encode,
+    additionalData
+  }: {
+    content: string | Uint8Array;
+    key: Uint8Array;
+    encode?: boolean;
+    additionalData?: string[];
+  }) => Promise<Uint8Array | string>;
 
   /**
    * decrypts a string or a Uint8Array
    * @param content - ciphertext as string or Uint8Array
    * @param key - key as Uint8Array
    * @param asString - boolean, if plaintext should be returned as string
+   * @param additionalData - array of strings, with additional Data for integrity and authenticity checks
    * @returns Promise with plaintext, as string if `asString` is true, as Uint8Array if not
    */
-  decrypt: ({ content, key, asString }: { content: string | Uint8Array; key: Uint8Array; asString?: boolean }) => Promise<Uint8Array | string>;
+  decrypt: ({
+    content,
+    key,
+    asString,
+    additionalData
+  }: {
+    content: string | Uint8Array;
+    key: Uint8Array;
+    asString?: boolean;
+    additionalData?: string[];
+  }) => Promise<Uint8Array | string>;
 
   /**
    * signs an object
