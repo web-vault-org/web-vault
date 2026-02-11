@@ -12,7 +12,7 @@
       "@/*": ["lib/*"],
       "#/*": ["tests/*"]
     },
-    "outDir": "dist",
+    "outDir": "built",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true
