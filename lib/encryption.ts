@@ -44,7 +44,7 @@ const encrypt = async function ({
   encode?: boolean;
   additionalData?: string[];
 }): Promise<Uint8Array | string> {
-  const crypto = await getCrypto();
+  const crypto = getCrypto();
 
   const plaintext = toUint8Array(content);
   const aad = encodeAAD(additionalData);
@@ -78,7 +78,7 @@ const decrypt = async function ({
   asString?: boolean;
   additionalData?: string[];
 }): Promise<Uint8Array | string> {
-  const crypto = await getCrypto();
+  const crypto = getCrypto();
 
   const data = typeof content === 'string' ? decodeBase64(content) : content;
   const aad = encodeAAD(additionalData);

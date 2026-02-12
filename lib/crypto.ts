@@ -1,11 +1,8 @@
-const getCrypto = async function (): Promise<Crypto> {
-  if (typeof window !== 'undefined' && window.crypto) {
-    // Browser
-    return window.crypto;
+const getCrypto = function (): Crypto {
+  if (!globalThis.crypto?.subtle) {
+    throw new Error('crypto.subtle not available. Wrong Environment or unsecure context');
   } else {
-    // Node.js
-    const nodeCrypto = await import('crypto');
-    return nodeCrypto.webcrypto as unknown as Crypto;
+    return globalThis.crypto;
   }
 };
 

@@ -6,7 +6,7 @@ import { getCrypto } from '@/crypto';
  * @returns Promise with desired key as Uint8Array
  */
 const createKey = async function ({ sizeInBytes }: { sizeInBytes: number }): Promise<Uint8Array> {
-  const crypto = await getCrypto();
+  const crypto = getCrypto();
   const key = new Uint8Array(sizeInBytes);
   crypto.getRandomValues(key);
   return key;

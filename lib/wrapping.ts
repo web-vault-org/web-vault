@@ -10,7 +10,7 @@ import { decode, encode as encodeBase64 } from '@/base64';
  * @returns Promise with wrappedKeys, as base64-encoded string if `encode` is true, as Uint8Array if not
  */
 const wrapKeys = async function ({ keys, kek, encode }: { keys: Uint8Array[]; kek: Uint8Array; encode?: boolean }): Promise<Uint8Array | string> {
-  const crypto = await getCrypto();
+  const crypto = getCrypto();
   const key = mergeUint8Array(keys);
   const keyMaterial = await importKey(key, 'AES-KW', ['wrapKey']);
   const kekMaterial = await importKey(kek, 'AES-KW', ['wrapKey']);
@@ -38,7 +38,7 @@ const unwrapKeys = async function ({
   kek: Uint8Array;
   lengths?: number[];
 }): Promise<Uint8Array[]> {
-  const crypto = await getCrypto();
+  const crypto = getCrypto();
   const kekMaterial = await importKey(kek, 'AES-KW', ['unwrapKey']);
   const wrappedKey = typeof wrappedKeys === 'string' ? decode(wrappedKeys) : wrappedKeys;
 

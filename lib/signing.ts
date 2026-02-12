@@ -9,7 +9,7 @@ const createDataString = function (data: Record<string, unknown>, exclude?: stri
 };
 
 const hmac = async function (dataString: string, key: Uint8Array): Promise<string> {
-  const crypto = await getCrypto();
+  const crypto = getCrypto();
   const encoder = new TextEncoder();
   const cryptoKey = await crypto.subtle.importKey('raw', key, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
   const data = encoder.encode(dataString);

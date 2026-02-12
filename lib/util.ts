@@ -1,7 +1,7 @@
 import { getCrypto } from '@/crypto';
 
 const importKey = async function (bytes: Uint8Array, name: string, usages: KeyUsage[]): Promise<CryptoKey> {
-  const crypto = await getCrypto();
+  const crypto = getCrypto();
   return await crypto.subtle.importKey('raw', bytes, { name }, true, usages);
 };
 
