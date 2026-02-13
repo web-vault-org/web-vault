@@ -4,14 +4,22 @@ on:
   push:
     tags:
       - 'v*.*.*'
-    branches:
-      - main
 
 jobs:
   build-and-publish:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Ensure tag points to main
+        run: |
+          git fetch origin main
+          TAG_COMMIT=$(git rev-parse $GITHUB_REF)
+          MAIN_COMMIT=$(git rev-parse origin/main)
+          if [ "$TAG_COMMIT" != "$MAIN_COMMIT" ]; then
+            echo "Tag is not on main branch, skipping release."
+            exit 1
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
